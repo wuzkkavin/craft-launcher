@@ -12,12 +12,13 @@ use super::detect::system_lang;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Script {
     Chinese,
+    ChineseTraditional,
     Japanese,
 }
 
 impl Script {
     /// Every script a language can be written in.
-    pub const ALL: [Script; 2] = [Script::Chinese, Script::Japanese];
+    pub const ALL: [Script; 3] = [Script::Chinese, Script::ChineseTraditional, Script::Japanese];
 }
 
 /// One supported UI language.
@@ -94,7 +95,7 @@ pub(super) fn plural_polish(n: u64) -> usize {
 }
 
 /// The registry. English first: it is the fallback and the source language.
-pub static LANGUAGES: [LangInfo; 11] = [
+pub static LANGUAGES: [LangInfo; 12] = [
     LangInfo {
         code: "en",
         name: "English",
@@ -216,6 +217,20 @@ pub static LANGUAGES: [LangInfo; 11] = [
         complete_menus: true,
         catalog: OnceLock::new(),
     },
+    // Added by the wuzkkavin fork: Traditional Chinese (Taiwan). Its face is the bundled
+    // jf open huninn (see `crate::theme`), so unlike Simplified Chinese it shows everywhere,
+    // the web build included.
+    LangInfo {
+        code: "zh-TW",
+        name: "繁體中文（台灣）",
+        english_name: "Traditional Chinese",
+        script: Some(Script::ChineseTraditional),
+        source: include_str!("zh-TW.tsv"),
+        plural: plural_none,
+        plural_forms: 1,
+        complete_menus: true,
+        catalog: OnceLock::new(),
+    },
 ];
 
 impl LangInfo {
@@ -254,6 +269,7 @@ impl Lang {
     pub const PL: Lang = Lang(&LANGUAGES[8]);
     pub const HU: Lang = Lang(&LANGUAGES[9]);
     pub const JA: Lang = Lang(&LANGUAGES[10]);
+    pub const ZH_TW: Lang = Lang(&LANGUAGES[11]);
 
     pub fn code(self) -> &'static str {
         self.0.code
@@ -329,14 +345,19 @@ pub fn lang_from_tag(tag: &str) -> Option<Lang> {
     }
 }
 
-/// Chinese by script: Simplified for `zh-Hans`, and for a bare `zh` or the regions that write
-/// Simplified (mainland China, Singapore) when no script is given. An explicit script wins over
-/// the region (`zh-Hant-CN` is Traditional); Traditional Chinese isn't offered.
+/// Chinese by script: Traditional for `zh-Hant` and for the regions that write Traditional
+/// (Taiwan, Hong Kong, Macao) when no script is given; Simplified for `zh-Hans`, and for a bare
+/// `zh` or the regions that write Simplified (mainland China, Singapore). An explicit script
+/// wins over the region (`zh-Hant-CN` is Traditional).
 fn chinese(tag: &str) -> Option<Lang> {
     let parts: Vec<&str> = tag.split('-').collect();
     if parts.contains(&"hant") {
-        None
-    } else if parts.contains(&"hans") || parts.len() == 1 || parts.iter().any(|p| matches!(*p, "cn" | "sg")) {
+        Some(Lang::ZH_TW)
+    } else if parts.contains(&"hans") {
+        Some(Lang::ZH_CN)
+    } else if parts.iter().any(|p| matches!(*p, "tw" | "hk" | "mo")) {
+        Some(Lang::ZH_TW)
+    } else if parts.len() == 1 || parts.iter().any(|p| matches!(*p, "cn" | "sg")) {
         Some(Lang::ZH_CN)
     } else {
         None
