@@ -162,7 +162,7 @@ pub const SUITE: [CraftApp; 12] = [
         "Writing and document design",
         AppGroup::New,
         [[0x3f, 0x5f, 0xe0], [0x2a, 0x44, 0xb8], [0x8e, 0xa2, 0xff]],
-        "storytold/wordcraft",
+        "wuzkkavin/wordcraft",
     ),
     app(
         "deckcraft",
@@ -170,7 +170,7 @@ pub const SUITE: [CraftApp; 12] = [
         "Presentations and slide shows",
         AppGroup::New,
         [[0xf0, 0x7a, 0x1e], [0xa8, 0x4f, 0x0a], [0xff, 0xa0, 0x60]],
-        "storytold/deckcraft",
+        "wuzkkavin/deckcraft",
     ),
     app(
         "gridcraft",
@@ -178,7 +178,7 @@ pub const SUITE: [CraftApp; 12] = [
         "Spreadsheets and data",
         AppGroup::New,
         [[0x1f, 0x9d, 0x55], [0x12, 0x70, 0x3a], [0x4f, 0xd6, 0x8a]],
-        "storytold/gridcraft",
+        "wuzkkavin/gridcraft",
     ),
     app(
         "cadcraft",
@@ -186,8 +186,9 @@ pub const SUITE: [CraftApp; 12] = [
         "Computer-aided design and drafting",
         AppGroup::New,
         [[0x3e, 0xa6, 0xe8], [0x1a, 0x6f, 0xa8], [0x7c, 0xc8, 0xff]],
-        // This fork's own Traditional Chinese build (the fork owner's requirement: apps the
+        // This fork's own Traditional Chinese builds (the fork owner's requirement: apps the
         // owner has localized install from the owner's account, the rest from upstream).
+        // CADCraft, WordCraft, DeckCraft and GridCraft are the owner's today.
         "wuzkkavin/cadcraft",
     ),
     app(
@@ -251,9 +252,9 @@ mod tests {
         ids.dedup();
         assert_eq!(ids.len(), SUITE.len());
         for a in &SUITE {
-            // Upstream's account for every app, except the ones this fork builds itself
-            // (CADCraft today), which live under the fork owner's account.
-            let owner = if a.id == "cadcraft" { "wuzkkavin" } else { "storytold" };
+            // Upstream's account for every app, except the ones this fork builds itself,
+            // which live under the fork owner's account.
+            let owner = if matches!(a.id, "cadcraft" | "wordcraft" | "deckcraft" | "gridcraft") { "wuzkkavin" } else { "storytold" };
             assert_eq!(a.repo, format!("{owner}/{}", a.id));
             assert_eq!(a.name.to_lowercase(), a.id);
         }
