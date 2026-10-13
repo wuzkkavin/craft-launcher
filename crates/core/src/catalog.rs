@@ -186,7 +186,9 @@ pub const SUITE: [CraftApp; 13] = [
         "Computer-aided design and drafting",
         AppGroup::New,
         [[0x3e, 0xa6, 0xe8], [0x1a, 0x6f, 0xa8], [0x7c, 0xc8, 0xff]],
-        "storytold/cadcraft",
+        // This fork's own Traditional Chinese build (the fork owner's requirement: apps the
+        // owner has localized install from the owner's account, the rest from upstream).
+        "wuzkkavin/cadcraft",
     ),
     app(
         "soundcraft",
@@ -234,11 +236,13 @@ pub const LAUNCHER: CraftApp = app(
     "Installs and updates the Craft App Suite",
     AppGroup::New,
     [[0x0b, 0x0b, 0x0c], [0x0b, 0x0b, 0x0c], [0xf2, 0xf1, 0xee]],
-    "storytold/craft-launcher",
+    "wuzkkavin/craft-launcher",
 );
 
-/// The launcher's own repo, checked so it can say when a newer launcher is out.
-pub const LAUNCHER_REPO: &str = "storytold/craft-launcher";
+/// The launcher's own repo, checked so it can say when a newer launcher is out. This fork
+/// points it at the fork owner's account, so the launcher updates itself from the owner's
+/// Traditional Chinese builds, never from upstream's.
+pub const LAUNCHER_REPO: &str = "wuzkkavin/craft-launcher";
 /// The launcher's own asset stem.
 pub const LAUNCHER_ID: &str = "artcraft-launcher";
 
@@ -255,7 +259,10 @@ mod tests {
         ids.dedup();
         assert_eq!(ids.len(), SUITE.len());
         for a in &SUITE {
-            assert_eq!(a.repo, format!("storytold/{}", a.id));
+            // Upstream's account for every app, except the ones this fork builds itself
+            // (CADCraft today), which live under the fork owner's account.
+            let owner = if a.id == "cadcraft" { "wuzkkavin" } else { "storytold" };
+            assert_eq!(a.repo, format!("{owner}/{}", a.id));
             assert_eq!(a.name.to_lowercase(), a.id);
         }
     }

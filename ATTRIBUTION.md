@@ -21,6 +21,12 @@ next to them.
 | `assets/fonts/Inter-Variable.ttf` | Inter 4.001, variable (body text) | The Inter Project Authors (Rasmus Andersson) | Google Fonts, <https://github.com/google/fonts/tree/main/ofl/inter> (`Inter[opsz,wght].ttf`, renamed) | SIL OFL 1.1, [`assets/fonts/OFL-Inter.txt`](assets/fonts/OFL-Inter.txt) |
 | `assets/fonts/Archivo-Variable.ttf` | Archivo 2.001, variable (headings and app names) | The Archivo Project Authors (Omnibus-Type) | Google Fonts, <https://github.com/google/fonts/tree/main/ofl/archivo> (`Archivo[wdth,wght].ttf`, renamed) | SIL OFL 1.1, [`assets/fonts/OFL-Archivo.txt`](assets/fonts/OFL-Archivo.txt) |
 | `assets/fonts/GeistMono-Variable.ttf` | Geist Mono 1.701, variable (labels and buttons) | The Geist Project Authors (Vercel) | Google Fonts, <https://github.com/google/fonts/tree/main/ofl/geistmono> (`GeistMono[wght].ttf`, renamed) | SIL OFL 1.1, [`assets/fonts/OFL-GeistMono.txt`](assets/fonts/OFL-GeistMono.txt) |
+| `assets/fonts/jf-openhuninn-2.1.ttf` | jf open huninn （粉圓） 2.1, the Traditional Chinese UI face | justfont | <https://github.com/justfont/open-huninn-font>, release 2.1 (`jf-openhuninn-2.1.ttf`) | SIL OFL 1.1, [`assets/fonts/jf-openhuninn-OFL.txt`](assets/fonts/jf-openhuninn-OFL.txt) |
+| `crates/ui-egui/src/i18n/zh-TW.tsv` | Traditional Chinese (Taiwan) UI catalog | This fork's contributors | Original translation of the English UI strings in this repository | MIT OR Apache-2.0, like the code |
+
+The last two rows are this fork's (wuzkkavin/craft-launcher) additions, not upstream's: upstream
+never bundles a CJK font and offers no Traditional Chinese; the fork's owner requires both, so
+Traditional Chinese draws with the bundled huninn on every platform, the web build included.
 
 ### Craft App Suite icons
 
