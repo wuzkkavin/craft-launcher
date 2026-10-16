@@ -137,7 +137,7 @@ pub const SUITE: [CraftApp; 13] = [
             "Reading, organizing and protecting PDFs",
             AppGroup::Classic,
             [[0x12, 0xa5, 0x8a], [0x0a, 0x75, 0x63], [0x3f, 0xd6, 0xb8]],
-            "storytold/pdfcraft",
+            "wuzkkavin/pdfcraft",
         )
     },
     app(
@@ -262,7 +262,7 @@ mod tests {
         for a in &SUITE {
             // Upstream's account for every app, except the ones this fork builds itself,
             // which live under the fork owner's account.
-            let owner = if matches!(a.id, "cadcraft" | "wordcraft" | "deckcraft" | "gridcraft") { "wuzkkavin" } else { "storytold" };
+            let owner = if matches!(a.id, "cadcraft" | "wordcraft" | "deckcraft" | "gridcraft" | "pdfcraft") { "wuzkkavin" } else { "storytold" };
             assert_eq!(a.repo, format!("{owner}/{}", a.id));
             assert_eq!(a.name.to_lowercase(), a.id);
         }
