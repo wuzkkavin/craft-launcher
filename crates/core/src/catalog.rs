@@ -98,7 +98,7 @@ pub const SUITE: [CraftApp; 13] = [
             "PdfCraft",
             "Reading, organizing and protecting PDFs",
             [[0x12, 0xa5, 0x8a], [0x0a, 0x75, 0x63], [0x3f, 0xd6, 0xb8]],
-            "storytold/pdfcraft",
+            "wuzkkavin/pdfcraft",
         )
     },
     app(
@@ -122,7 +122,7 @@ pub const SUITE: [CraftApp; 13] = [
         [[0x02, 0xda, 0x96], [0x04, 0x7a, 0x56], [0x4f, 0xe8, 0xb6]],
         "storytold/figcraft",
     ),
-    app("wordcraft", "WordCraft", "Writing and document design", [[0x3f, 0x5f, 0xe0], [0x2a, 0x44, 0xb8], [0x8e, 0xa2, 0xff]], "storytold/wordcraft"),
+    app("wordcraft", "WordCraft", "Writing and document design", [[0x3f, 0x5f, 0xe0], [0x2a, 0x44, 0xb8], [0x8e, 0xa2, 0xff]], "wuzkkavin/wordcraft"),
     app(
         "soundcraft",
         "SoundCraft",
@@ -135,16 +135,16 @@ pub const SUITE: [CraftApp; 13] = [
         "DeckCraft",
         "Presentations and slide shows",
         [[0xf0, 0x7a, 0x1e], [0xa8, 0x4f, 0x0a], [0xff, 0xa0, 0x60]],
-        "storytold/deckcraft",
+        "wuzkkavin/deckcraft",
     ),
     app(
         "cadcraft",
         "CADCraft",
         "Computer-aided design and drafting",
         [[0x3e, 0xa6, 0xe8], [0x1a, 0x6f, 0xa8], [0x7c, 0xc8, 0xff]],
-        "storytold/cadcraft",
+        "wuzkkavin/cadcraft",
     ),
-    app("gridcraft", "GridCraft", "Spreadsheets and data", [[0x1f, 0x9d, 0x55], [0x12, 0x70, 0x3a], [0x4f, 0xd6, 0x8a]], "storytold/gridcraft"),
+    app("gridcraft", "GridCraft", "Spreadsheets and data", [[0x1f, 0x9d, 0x55], [0x12, 0x70, 0x3a], [0x4f, 0xd6, 0x8a]], "wuzkkavin/gridcraft"),
 ];
 
 /// ArtCraft's website.
@@ -176,11 +176,13 @@ pub const LAUNCHER: CraftApp = app(
     "ArtCraft Launcher",
     "Installs and updates the Craft App Suite",
     [[0x0b, 0x0b, 0x0c], [0x0b, 0x0b, 0x0c], [0xf2, 0xf1, 0xee]],
-    "storytold/craft-launcher",
+    "wuzkkavin/craft-launcher",
 );
 
-/// The launcher's own repo, checked so it can say when a newer launcher is out.
-pub const LAUNCHER_REPO: &str = "storytold/craft-launcher";
+/// The launcher's own repo, checked so it can say when a newer launcher is out. This fork
+/// points it at the fork owner's account, so the launcher updates itself from the owner's
+/// Traditional Chinese builds, never from upstream's.
+pub const LAUNCHER_REPO: &str = "wuzkkavin/craft-launcher";
 /// The launcher's own asset stem.
 pub const LAUNCHER_ID: &str = "artcraft-launcher";
 
@@ -196,7 +198,10 @@ mod tests {
         ids.dedup();
         assert_eq!(ids.len(), SUITE.len());
         for a in &SUITE {
-            assert_eq!(a.repo, format!("storytold/{}", a.id));
+            // Upstream's account for every app, except the ones this fork builds itself,
+            // which live under the fork owner's account.
+            let owner = if matches!(a.id, "cadcraft" | "wordcraft" | "deckcraft" | "gridcraft" | "pdfcraft") { "wuzkkavin" } else { "storytold" };
+            assert_eq!(a.repo, format!("{owner}/{}", a.id));
             assert_eq!(a.name.to_lowercase(), a.id);
         }
     }

@@ -350,11 +350,18 @@ fn simplified_chinese_locales_respect_the_script() {
     for tag in ["zh", "zh-CN", "zh_CN.UTF-8", "zh-SG", "zh-Hans", "zh-Hans-CN", "zh-Hans-HK", "ZH_cn"] {
         assert_eq!(lang_from_tag(tag), Some(Lang::ZH_CN), "{tag}");
     }
+}
+
+#[test]
+fn traditional_chinese_locales_resolve_to_the_forks_language() {
     for tag in ["zh-TW", "zh-HK", "zh-MO", "zh-Hant", "zh-Hant-CN", "zh-Hant-SG", "zh_TW.UTF-8"] {
-        assert_eq!(lang_from_tag(tag), None, "{tag}");
+        assert_eq!(lang_from_tag(tag), Some(Lang::ZH_TW), "{tag}");
     }
-    // A Traditional Chinese system that also lists English gets English, not Simplified.
-    assert_eq!(super::detect::first_supported(["zh-Hant-TW", "en-US"]), Some(Lang::EN));
+    // A Traditional Chinese system that also lists English gets Traditional, not Simplified.
+    assert_eq!(super::detect::first_supported(["zh-Hant-TW", "en-US"]), Some(Lang::ZH_TW));
+    // An explicit script wins over the region either way.
+    assert_eq!(lang_from_tag("zh-Hans-TW"), Some(Lang::ZH_CN));
+    assert_eq!(lang_from_tag("zh-Hant-CN"), Some(Lang::ZH_TW));
 }
 
 #[test]
@@ -366,6 +373,17 @@ fn chinese_counts_and_english_fallback_work() {
     assert_eq!(trn(Lang::ZH_CN, 2, "{n} unknown item", "{n} unknown items"), "2 unknown items");
     assert_eq!(tr(Lang::ZH_CN, "Untranslated diagnostic"), "Untranslated diagnostic");
     assert_eq!(message(Lang::ZH_CN, "PhotoCraft updated to 0.5.0"), "PhotoCraft 已更新至 0.5.0");
+}
+
+#[test]
+fn traditional_chinese_counts_and_messages_work() {
+    for n in [0, 1, 2, 11, 100] {
+        assert_eq!(trn(Lang::ZH_TW, n, "{n} app", "{n} apps"), format!("{n} 個應用程式"));
+        assert_eq!(trn(Lang::ZH_TW, n, "{n} min ago", "{n} min ago"), format!("{n} 分鐘前"));
+    }
+    assert_eq!(tr(Lang::ZH_TW, "{month} {day}, {year}"), "{year}年{month}{day}日");
+    assert_eq!(message(Lang::ZH_TW, "PhotoCraft updated to 0.5.0"), "PhotoCraft 已更新至 0.5.0");
+    assert_eq!(tr(Lang::ZH_TW, "Untranslated diagnostic"), "Untranslated diagnostic");
 }
 
 #[test]
