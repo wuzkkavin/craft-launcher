@@ -111,8 +111,22 @@ impl LauncherUi {
                 this.settings_install(ui, &mut **host);
                 this.settings_background(ui, &mut **host);
                 this.settings_community(ui);
+                this.settings_about(ui);
             },
         );
+    }
+
+    fn settings_about(&mut self, ui: &mut Ui) {
+        // Fork-only Traditional Chinese edition credit (owner's standing rule,
+        // 2026-10-16): shown at the foot of Settings — this launcher's About
+        // surface, which also shows its version in the title — only when the
+        // interface language is Traditional Chinese (Taiwan). (Moved here from
+        // dialogs.rs in v0.6.0, where Settings got its own file and layout.)
+        if crate::i18n::current().code() == "zh-TW" {
+            sheet::panel(ui, "關於", |ui| {
+                ui.label(RichText::new("©Copyright 2026 By 吳治綱 繁體中文化").strong());
+            });
+        }
     }
 
     fn settings_language(&mut self, ui: &mut Ui) {

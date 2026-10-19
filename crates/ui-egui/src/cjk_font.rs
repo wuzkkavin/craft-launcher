@@ -39,6 +39,7 @@ fn face_metrics(data: &[u8], index: u32) -> (f32, f32) {
 fn script_name(script: Script) -> &'static str {
     match script {
         Script::Chinese => "Chinese",
+        Script::ChineseTraditional => "Traditional Chinese",
         Script::Japanese => "Japanese",
     }
 }
@@ -47,6 +48,7 @@ fn script_name(script: Script) -> &'static str {
 fn script_families(script: Script) -> &'static str {
     match script {
         Script::Chinese => "PingFang SC, Hiragino Sans GB, Heiti SC, Microsoft YaHei, SimSun, Noto Sans CJK SC and WenQuanYi",
+        Script::ChineseTraditional => "PingFang TC, Microsoft JhengHei and Noto Sans CJK TC",
         Script::Japanese => "Hiragino Sans, Yu Gothic, Meiryo, MS Gothic, Noto Sans CJK JP, Noto Sans JP, IPAGothic and TakaoGothic",
     }
 }
@@ -122,8 +124,47 @@ pub(crate) fn face_index(data: &[u8], family: &str) -> Option<u32> {
 fn candidates(script: Script) -> Vec<Candidate> {
     match script {
         Script::Chinese => chinese_candidates(),
+        Script::ChineseTraditional => traditional_candidates(),
         Script::Japanese => japanese_candidates(),
     }
+}
+
+/// Where each system keeps a Traditional Chinese font, best first. The fork's Traditional
+/// Chinese is normally drawn with the bundled jf open huninn (see `crate::theme`); these system
+/// faces are the fallback for callers that load by script alone.
+fn traditional_candidates() -> Vec<Candidate> {
+    let mut out = Vec::new();
+    let mut add = |path: PathBuf, family: &'static str| out.push(Candidate { path, family });
+    #[cfg(target_os = "macos")]
+    {
+        add("/System/Library/Fonts/PingFang.ttc".into(), "PingFang TC");
+        for path in mac_font_assets("PingFang.ttc") {
+            add(path, "PingFang TC");
+        }
+    }
+    #[cfg(target_os = "windows")]
+    {
+        let root = std::env::var_os("SystemRoot").map_or_else(|| PathBuf::from(r"C:\Windows"), PathBuf::from);
+        add(root.join("Fonts").join("msjh.ttc"), "Microsoft JhengHei");
+    }
+    #[cfg(all(unix, not(target_os = "macos")))]
+    {
+        const NOTO_DIRS: [&str; 8] = [
+            "/usr/share/fonts/opentype/noto",
+            "/usr/share/fonts/noto-cjk",
+            "/usr/share/fonts/google-noto-cjk",
+            "/usr/share/fonts/google-noto-sans-cjk-fonts",
+            "/usr/share/fonts/google-noto-sans-cjk-vf-fonts",
+            "/usr/share/fonts/noto",
+            "/usr/local/share/fonts/noto",
+            "/usr/local/share/fonts/noto-cjk",
+        ];
+        for dir in NOTO_DIRS {
+            add(Path::new(dir).join("NotoSansCJKtc-Regular.otf"), "Noto Sans CJK TC");
+            add(Path::new(dir).join("NotoSansCJK-Regular.ttc"), "Noto Sans CJK TC");
+        }
+    }
+    out
 }
 
 /// Where each system keeps a Simplified Chinese font, best first.
