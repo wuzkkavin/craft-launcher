@@ -482,5 +482,14 @@ impl LauncherUi {
             widgets::cells(ui, &mut theme_choice, &ThemeChoice::ALL.map(|c| (c, Cell { label: c.label(), tip: c.label(), count: None })));
         });
         self.settings.theme = theme_choice;
+
+        // Fork-only Traditional Chinese edition credit (owner's standing rule,
+        // 2026-10-16): shown at the foot of Settings — this launcher's About
+        // surface, which also shows its version in the title — only when the
+        // interface language is Traditional Chinese (Taiwan).
+        if crate::i18n::current().code() == "zh-TW" {
+            section(ui, "關於");
+            ui.label(RichText::new("©Copyright 2026 By 吳治綱 繁體中文化").strong());
+        }
     }
 }

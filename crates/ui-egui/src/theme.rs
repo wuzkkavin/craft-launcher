@@ -308,9 +308,26 @@ pub fn install_fonts(ctx: &egui::Context, cjk: Option<Lang>) {
     ctx.set_fonts(fonts);
 }
 
-/// The system's font for a CJK language, read once per language (tens of MB). Desktop only: the
-/// web build has none, so CJK text can't be drawn there.
+/// jf open huninn 2.1 (justfont, SIL OFL 1.1; see ATTRIBUTION.md), bundled by this fork for
+/// Traditional Chinese: upstream never bundles a CJK font, but the fork's owner requires
+/// Traditional Chinese to draw everywhere — a Taiwan system cannot be assumed to offer a face
+/// this code looks for, and the web build has no system font at all.
+const HUNINN: &[u8] = include_bytes!("../../../assets/fonts/jf-openhuninn-2.1.ttf");
+
+/// The bundled Traditional Chinese face, parsed once.
+fn bundled_tc_font() -> Arc<FontData> {
+    static FONT: std::sync::OnceLock<Arc<FontData>> = std::sync::OnceLock::new();
+    FONT.get_or_init(|| Arc::new(FontData::from_static(HUNINN))).clone()
+}
+
+/// The font for a CJK language: the bundled face for Traditional Chinese (every platform, the
+/// web build included); otherwise the system's font for the language's script, read once per
+/// language (tens of MB), desktop only — the web build has none, so that CJK text can't be
+/// drawn there.
 pub fn cjk_font(lang: Lang) -> Option<Arc<FontData>> {
+    if lang.code() == "zh-TW" {
+        return Some(bundled_tc_font());
+    }
     #[cfg(not(target_arch = "wasm32"))]
     {
         CJK_FONTS.lock().unwrap_or_else(std::sync::PoisonError::into_inner).entry(lang.code()).or_insert_with(|| load_cjk(lang)).clone()
@@ -335,8 +352,12 @@ fn load_cjk(lang: Lang) -> Option<Arc<FontData>> {
 static CJK_FONTS: std::sync::Mutex<std::collections::BTreeMap<&'static str, Option<Arc<FontData>>>> =
     std::sync::Mutex::new(std::collections::BTreeMap::new());
 
-/// Has the system font for `lang` already been loaded? Never loads it.
+/// Has the font for `lang` already been loaded? Never loads it. Traditional Chinese counts as
+/// loaded: its face is bundled, not fetched from the system.
 pub fn cjk_font_loaded(lang: Lang) -> bool {
+    if lang.code() == "zh-TW" {
+        return true;
+    }
     #[cfg(not(target_arch = "wasm32"))]
     {
         CJK_FONTS.lock().unwrap_or_else(std::sync::PoisonError::into_inner).get(lang.code()).is_some_and(Option::is_some)
