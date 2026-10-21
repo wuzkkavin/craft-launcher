@@ -332,3 +332,17 @@ figcraft	Interface design and prototyping	介面設計與原型製作
 	Replace what's there?	要取代現有內容嗎？
 	{path} already exists. Installing {name} will overwrite it.	{path} 已存在。安裝 {name} 將覆寫它。
 	Replace	取代
+	Arch package (.pkg.tar.zst)	Arch 套件 (.pkg.tar.zst)
+	Frequently used	最常使用
+	Last updated: {date}	上次更新：{date}
+	Name (A–Z)	名稱 (A–Z)
+	Name (Z–A)	名稱 (Z–A)
+	Next app	下一個應用程式
+	Previous app	上一個應用程式
+	Recently updated	最近更新
+	Show {n} more changes	再顯示 {n} 項變更
+@msg	{name} was installed from the AUR ({pkg}). Update it with your AUR helper (for example: yay -S {pkg})	{name} 是從 AUR 安裝的（{pkg}）。請用你的 AUR 小幫手更新（例如：yay -S {pkg}）
+@msg	{name} was installed from the AUR ({pkg}). Update it with {cmd}	{name} 是從 AUR 安裝的（{pkg}）。請用 {cmd} 更新
+@msg	{name} was installed from the {repo} repository or the AUR ({pkg}). Update it with your AUR helper (for example: yay -S {pkg}) or sudo pacman -Syu	{name} 是從 {repo} 套件庫或 AUR 安裝的（{pkg}）。請用你的 AUR 小幫手（例如：yay -S {pkg}）或 sudo pacman -Syu 更新
+@msg	{name} was installed from the {repo} repository or the AUR ({pkg}). Update it with {cmd} or sudo pacman -Syu	{name} 是從 {repo} 套件庫或 AUR 安裝的（{pkg}）。請用 {cmd} 或 sudo pacman -Syu 更新
+column	Version	版本
