@@ -175,8 +175,9 @@ fn traditional_chinese_switches_persists_and_keeps_install_actions() {
     h.get_by_label("影像編輯");
     h.get_by_label_contains("3 分鐘前檢查過 · 使用 ArtCraft API");
     h.get_by_label("更新至 0.5.0");
-    // Product names stay in English.
-    h.get_by_label("Launcher");
+    // Product names stay in English; the launcher's self entry is not a grid card
+    // (v0.6.0: same assertion shape as upstream's chinese.rs).
+    assert!(h.query_by_label("Launcher").is_none());
     snapshot(&mut h, "grid-zh-TW-dark");
     h.get_by_label("全部更新（2）").click();
     h.run_steps(2);
@@ -185,7 +186,7 @@ fn traditional_chinese_switches_persists_and_keeps_install_actions() {
 
     let (mut table, _) = harness_language(ViewMode::Table, egui::Theme::Light, true, &restored.language);
     table.run_steps(6);
-    table.get_by_label("已安裝版本");
+    table.get_by_label("版本");
     assert!(table.query_all_by_label_contains("年10月").count() >= 1);
     snapshot(&mut table, "table-zh-TW-light");
     let (mut web, _) = harness_language(ViewMode::Grid, egui::Theme::Dark, false, &restored.language);
