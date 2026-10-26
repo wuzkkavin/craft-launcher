@@ -348,3 +348,5 @@ figcraft	Interface design and prototyping	介面設計與原型製作
 @msg	{name} was installed from the {repo} repository or the AUR ({pkg}). Update it with your AUR helper (for example: yay -S {pkg}) or sudo pacman -Syu	{name} 是從 {repo} 套件庫或 AUR 安裝的（{pkg}）。請用你的 AUR 小幫手（例如：yay -S {pkg}）或 sudo pacman -Syu 更新
 @msg	{name} was installed from the {repo} repository or the AUR ({pkg}). Update it with {cmd} or sudo pacman -Syu	{name} 是從 {repo} 套件庫或 AUR 安裝的（{pkg}）。請用 {cmd} 或 sudo pacman -Syu 更新
 column	Version	版本
+	ArtCraft Launcher is still running	ArtCraft Launcher 仍在執行中
+	It's in the tray: open it or quit it from the tray icon, or turn this off in the settings.	它還在系統匣：可以從系統匣圖示開啟或結束它，也可以在設定中將它關閉。
